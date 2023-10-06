@@ -76,12 +76,17 @@ func main() {
 			return
 		}
 
-		// Navigate through the map and print the response text
+		// Print the entire response map to see its structure
+		fmt.Println(response)
+
 		if choices, exists := response["choices"].([]interface{}); exists {
 			if len(choices) > 0 {
 				choice := choices[0].(map[string]interface{})
-				text := choice["text"].(string)
-				fmt.Println("ChatGPT:", text)
+				if text, exists := choice["text"].(string); exists {
+					fmt.Println("ChatGPT:", text)
+				} else {
+					fmt.Println("Text field is missing or not a string")
+				}
 			} else {
 				fmt.Println("No response choices received")
 			}
