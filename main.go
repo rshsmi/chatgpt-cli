@@ -53,7 +53,7 @@ func main() {
 			return
 		}
 
-		req, err := http.NewRequest("POST", "https://api.openai.com/v1/engines/davinci-codex/completions", bytes.NewBuffer(payloadBytes))
+		req, err := http.NewRequest("POST", "https://api.openai.com/v1/chat/completions", bytes.NewBuffer(payloadBytes))
 		if err != nil {
 			fmt.Println("Error creating request:", err)
 			return
