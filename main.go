@@ -24,6 +24,12 @@ func main() {
 	client := &http.Client{}
 	scanner := bufio.NewScanner(os.Stdin)
 
+	apiKey := os.Getenv("OPENAI_API_KEY")
+	if apiKey == "" {
+		fmt.Println("Error: OPENAI_API_KEY environment variable not set")
+		return
+	}
+
 	for {
 		fmt.Print("You: ")
 		scanner.Scan()
@@ -54,7 +60,7 @@ func main() {
 		}
 
 		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("Authorization", "Bearer YOUR_API_KEY")
+		req.Header.Set("Authorization", "Bearer " + apiKey)
 
 		resp, err := client.Do(req)
 		if err != nil {
