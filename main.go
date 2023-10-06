@@ -53,7 +53,7 @@ func main() {
 			return
 		}
 
-		req, err := http.NewRequest("POST", "https://api.openai.com/v1/chat/completions", bytes.NewBuffer(payloadBytes))
+		req, err := http.NewRequest("POST", "https://api.openai.com/v1/engines/gpt-3.5-turbo/completions", bytes.NewBuffer(payloadBytes))
 		if err != nil {
 			fmt.Println("Error creating request:", err)
 			return
@@ -74,6 +74,9 @@ func main() {
 			fmt.Println("Error reading response:", err)
 			return
 		}
+
+		fmt.Println("HTTP Status:", resp.Status)  // Print HTTP status
+		fmt.Println("Raw Response:", string(body))  // Print raw response body
 
 		var response Response
 		err = json.Unmarshal(body, &response)
