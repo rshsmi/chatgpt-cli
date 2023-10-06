@@ -20,12 +20,6 @@ type Payload struct {
 	Messages []Message `json:"messages"`
 }
 
-type Response struct {
-	Choices []struct {
-		Text string `json:"text"`
-	} `json:"choices"`
-}
-
 func main() {
 	client := &http.Client{}
 	scanner := bufio.NewScanner(os.Stdin)
@@ -53,7 +47,7 @@ func main() {
 			return
 		}
 
-		req, err := http.NewRequest("POST", "https://api.openai.com/v1/engines/gpt-3.5-turbo/completions", bytes.NewBuffer(payloadBytes))
+		req, err := http.NewRequest("POST", "https://api.openai.com/v1/chat/completions", bytes.NewBuffer(payloadBytes))
 		if err != nil {
 			fmt.Println("Error creating request:", err)
 			return
@@ -75,20 +69,24 @@ func main() {
 			return
 		}
 
-		fmt.Println("HTTP Status:", resp.Status)  // Print HTTP status
-		fmt.Println("Raw Response:", string(body))  // Print raw response body
-
-		var response Response
+		var response map[string]interface{}
 		err = json.Unmarshal(body, &response)
 		if err != nil {
 			fmt.Println("Error unmarshalling response:", err)
 			return
 		}
 
-		if len(response.Choices) > 0 {
-			fmt.Println("ChatGPT:", response.Choices[0].Text)
+		// Navigate through the map and print the response text
+		if choices, exists := response["choices"].([]interface{}); exists {
+			if len(choices) > 0 {
+				choice := choices[0].(map[string]interface{})
+				text := choice["text"].(string)
+				fmt.Println("ChatGPT:", text)
+			} else {
+				fmt.Println("No response choices received")
+			}
 		} else {
-			fmt.Println("No response received")
+			fmt.Println("Unexpected response format")
 		}
 	}
 }
